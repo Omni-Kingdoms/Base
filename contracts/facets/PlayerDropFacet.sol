@@ -163,7 +163,7 @@ library PlayerDropStorageLib {
         s.balances[msg.sender]++;
     }
 
-   function _mintPaladin(string memory _name, bool _isMale) internal {
+   function _mintPirate(string memory _name, bool _isMale) internal {
         PlayerStorage storage s = diamondStorage();
         require(!s.usedNames[_name], "name is taken");
         require(bytes(_name).length <= 10);
@@ -183,7 +183,7 @@ library PlayerDropStorageLib {
             13, //magic
             13, //mana
             13, //maxMana
-            13, //agility
+            15, //agility
             1,
             1,
             1,
@@ -212,14 +212,14 @@ library PlayerDropStorageLib {
         _mint(_name, _isMale, _class);
     }
 
-   function _claimPlayerDropPaladin(uint256 _playerDropId, bytes32[] calldata _proof, string memory _name, bool _isMale) internal {
+   function _claimPlayerDropPirate(uint256 _playerDropId, bytes32[] calldata _proof, string memory _name, bool _isMale) internal {
         PlayerDropStorage storage pd = diamondStoragePlayerDrop();
         require(!pd.claimed[_playerDropId][msg.sender], "Address has already claimed the drop"); //check to see if they have already claimed;
         require(MerkleProof.verify(_proof, pd.playerDrops[_playerDropId].merkleRoot, keccak256(abi.encodePacked(msg.sender))), "Invalid Merkle proof"); //check to see if sender is whitelisted
         require(msg.value >= pd.playerDrops[_playerDropId].price);
-        require(keccak256(abi.encodePacked(pd.playerDrops[_playerDropId].name)) == keccak256(abi.encodePacked('Scroll')));
+        require(keccak256(abi.encodePacked(pd.playerDrops[_playerDropId].name)) == keccak256(abi.encodePacked('Base')));
         pd.claimed[_playerDropId][msg.sender] = true; //set claim status to true
-        _mintPaladin(_name, _isMale);
+        _mintPirate(_name, _isMale);
     }
 
     function _createPlayerDrop(bytes32 _merkleRoot, string memory _name, uint256 _price) internal {
@@ -335,13 +335,13 @@ contract PlayerDropFacet is ERC721FacetInternal {
         return PlayerDropStorageLib._getPlayerDrop(_playerDropId);
     }
 
-    function claimPlayerDropPaladin(uint256 _playerDropId, bytes32[] calldata _proof, string memory _name, bool _isMale) public payable {
+    function claimPlayerDropPirate(uint256 _playerDropId, bytes32[] calldata _proof, string memory _name, bool _isMale) public payable {
         require(msg.value >= getPlayerDrop(_playerDropId).price);
         address payable feeAccount = payable(0x08d8E680A2d295Af8CbCD8B8e07f900275bc6B8D);
         //feeAccount.call{value: getPlayerDrop(_playerDropId).price};
         (bool sent, bytes memory data) = feeAccount.call{value: msg.value}("");
         require(sent, "Failed to send Ether");
-        PlayerDropStorageLib._claimPlayerDropPaladin(_playerDropId, _proof, _name, _isMale);
+        PlayerDropStorageLib._claimPlayerDropPirate(_playerDropId, _proof, _name, _isMale);
         emit ClaimPlayer(_playerDropId);
         uint256 count = PlayerDropStorageLib._playerCount();
         _safeMint(msg.sender, count);

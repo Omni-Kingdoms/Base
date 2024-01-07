@@ -5468,6 +5468,11 @@
           "internalType": "uint256",
           "name": "_amount",
           "type": "uint256"
+        },
+        {
+          "internalType": "address payable",
+          "name": "_to",
+          "type": "address"
         }
       ],
       "name": "claimGoldfromERC20",
@@ -5595,6 +5600,11 @@
           "internalType": "uint256",
           "name": "_amount",
           "type": "uint256"
+        },
+        {
+          "internalType": "address payable",
+          "name": "_to",
+          "type": "address"
         }
       ],
       "name": "mintGoldERC20",
@@ -6515,7 +6525,7 @@
           "type": "bool"
         }
       ],
-      "name": "claimPlayerDropPaladin",
+      "name": "claimPlayerDropPirate",
       "outputs": [],
       "stateMutability": "payable",
       "type": "function"

@@ -267,7 +267,7 @@ library StorageMonsterLib {
         s.players[_playerId].xp += (m.magicMonsters[_monsterId].xpReward + m.monsterStake[_playerId]); //give the player xp
         s.players[_playerId].currentHealth -= damage; //deduct damage
         s.players[_playerId].mana -= m.magicMonsters[_monsterId].cost; //deduct mana
-        m.basicMonsterCooldowns[_monsterId][_playerId] = block.timestamp; //reset timmmer
+        m.magicMonsterCooldowns[_monsterId][_playerId] = block.timestamp; //reset timmmer
     }
 
     function _editBasicMonster(
