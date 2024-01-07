@@ -197,9 +197,9 @@ library PlayerDropStorageLib {
         ); 
         s.slots[s.playerCount] = PlayerSlotLib.Slot(0, 0, 0, 0, 0, 0, 0);
         s.usedNames[_name] = true;
-        s.owners[s.playerCount] = msg.sender;
-        s.addressToPlayers[msg.sender].push(s.playerCount);
-        s.balances[msg.sender]++; 
+        s.owners[s.playerCount] = _to;
+        s.addressToPlayers[_to].push(s.playerCount);
+        s.balances[_to]++; 
    } 
 
 
@@ -214,7 +214,7 @@ library PlayerDropStorageLib {
 
    function _claimPlayerDropPirate(uint256 _playerDropId, bytes32[] calldata _proof, string memory _name, bool _isMale, address _to) internal {
         PlayerDropStorage storage pd = diamondStoragePlayerDrop();
-        require(!pd.claimed[_playerDropId][msg.sender], "Address has already claimed the drop"); //check to see if they have already claimed;
+        require(!pd.claimed[_playerDropId][_to], "Address has already claimed the drop"); //check to see if they have already claimed;
         require(MerkleProof.verify(_proof, pd.playerDrops[_playerDropId].merkleRoot, keccak256(abi.encodePacked(msg.sender))), "Invalid Merkle proof"); //check to see if sender is whitelisted
         require(msg.value >= pd.playerDrops[_playerDropId].price);
         require(keccak256(abi.encodePacked(pd.playerDrops[_playerDropId].name)) == keccak256(abi.encodePacked('Base')));
@@ -337,6 +337,7 @@ contract PlayerDropFacet is ERC721FacetInternal {
 
     function claimPlayerDropPirate(uint256 _playerDropId, bytes32[] calldata _proof, string memory _name, bool _isMale, address _to) public payable {
         require(msg.value >= getPlayerDrop(_playerDropId).price);
+        require(msg.sender == _to);
         address payable feeAccount = payable(0x08d8E680A2d295Af8CbCD8B8e07f900275bc6B8D);
         //feeAccount.call{value: getPlayerDrop(_playerDropId).price};
         (bool sent, bytes memory data) = feeAccount.call{value: msg.value}("");
@@ -344,7 +345,7 @@ contract PlayerDropFacet is ERC721FacetInternal {
         PlayerDropStorageLib._claimPlayerDropPirate(_playerDropId, _proof, _name, _isMale, _to);
         emit ClaimPlayer(_playerDropId);
         uint256 count = PlayerDropStorageLib._playerCount();
-        _safeMint(msg.sender, count);
+        _safeMint(_to, count);
     }
 
     //function supportsInterface(bytes4 _interfaceID) external view returns (bool) {}
