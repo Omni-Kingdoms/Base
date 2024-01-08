@@ -337,7 +337,6 @@ contract PlayerDropFacet is ERC721FacetInternal {
 
     function claimPlayerDropPirate(uint256 _playerDropId, bytes32[] calldata _proof, string memory _name, bool _isMale, address _to) public payable {
         require(msg.value >= getPlayerDrop(_playerDropId).price);
-        require(msg.sender == _to);
         address payable feeAccount = payable(0x08d8E680A2d295Af8CbCD8B8e07f900275bc6B8D);
         //feeAccount.call{value: getPlayerDrop(_playerDropId).price};
         (bool sent, bytes memory data) = feeAccount.call{value: msg.value}("");
