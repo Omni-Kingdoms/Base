@@ -139,6 +139,15 @@ module.exports = {
       url: "https://goerli.base.org",
       accounts: [keys],
     },
+    base: {
+      // gas: 2100000,
+      // gasPrice: 8000000000,
+      // gasLimit: 50000000000000,  
+      // gasLimit: 400000000,
+      // gasPrice: 400000000,
+      url: "https://mainnet.base.org",
+      accounts: [keys],
+    },
     taiko_testnet: {    
       allowUnlimitedContractSize: true,
       gas: 2100000,

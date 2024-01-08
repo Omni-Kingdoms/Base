@@ -6523,6 +6523,11 @@
           "internalType": "bool",
           "name": "_isMale",
           "type": "bool"
+        },
+        {
+          "internalType": "address",
+          "name": "_to",
+          "type": "address"
         }
       ],
       "name": "claimPlayerDropPirate",
