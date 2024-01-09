@@ -87,8 +87,8 @@ library StorageLib {
         TrainStorage storage t = diamondStorageTrain();
         require(s.players[_tokenId].status == 0); //is idle
         require(s.owners[_tokenId] == msg.sender); // ownerOf
+        require(s.players[_tokenId].maxMana > s.players[_tokenId].mana); //make sure player isnt at full mana
         require(block.timestamp >= t.cooldown[_tokenId] + 1); //check time requirement
-
         s.players[_tokenId].status = 3; //mana training
         t.basicMana[_tokenId] = block.timestamp;
         delete t.cooldown[_tokenId];
@@ -99,7 +99,9 @@ library StorageLib {
         TrainStorage storage t = diamondStorageTrain();
         require(s.owners[_playerId] == msg.sender);
         require(s.players[_playerId].status == 3); //require that they are training mana
-        require(block.timestamp >= t.basicMana[_playerId] + 300, "it's too early to pull out");
+        uint256 timer;
+        s.players[_playerId].agility >= 150 ? timer = 150 : timer = 300 - s.players[_playerId].agility;
+        require(block.timestamp >= t.basicHealth[_playerId] + timer, "it's too early to pull out");
         s.players[_playerId].status = 0;
         delete t.basicMana[_playerId];
         t.cooldown[_playerId] = block.timestamp; //reset the cool down
