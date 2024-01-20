@@ -464,9 +464,9 @@ contract ArenaFacet {
         return StorageLib._getGoldBalance(_address);
     }
 
-    function freeGold() public {
-        StorageLib._mintGold();
-    }
+    // function freeGold() public {
+    //     StorageLib._mintGold();
+    // }
 
     //function supportsInterface(bytes4 _interfaceID) external view returns (bool) {}
 }

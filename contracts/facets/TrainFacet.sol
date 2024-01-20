@@ -75,10 +75,10 @@ library StorageLib {
         require(block.timestamp >= t.basicHealth[_playerId] + timer, "it's too early to pull out");
         s.players[_playerId].status = 0; //reset status back to idle
         delete t.basicHealth[_playerId];
-        if (s.players[_playerId].health - s.players[_playerId].currentHealth >= 3) {
-            s.players[_playerId].currentHealth += 3;
+        if (s.players[_playerId].health - s.players[_playerId].currentHealth >= 3) { //check if difference is more than 3
+            s.players[_playerId].currentHealth += 3; // heal by 3
         } else {
-            s.players[_playerId].health = s.players[_playerId].currentHealth;
+            s.players[_playerId].currentHealth = s.players[_playerId].health; //restore to full health
         }
     }
 
@@ -129,6 +129,13 @@ library StorageLib {
         TrainStorage storage t = diamondStorageTrain();
         return t.basicMana[_playerId];
     }
+
+    function _adminMaxHealth(uint256 _playerId, uint256 _newHealth) internal {
+        PlayerStorage storage s = diamondStoragePlayer();
+        s.players[_playerId].health = _newHealth; //resetMaxHealth
+        s.players[_playerId].currentHealth = _newHealth; //reset currentHealth to full
+    }
+
 }
 
 contract TrainFacet {
@@ -163,6 +170,12 @@ contract TrainFacet {
 
     function getManaStart(uint256 _playerId) external view returns (uint256) {
         return StorageLib._getManaStart(_playerId);
+    }
+
+    function adminMaxHealth(uint256 _playerId, uint256 _newHealth) external {
+        address createAccount = payable(0x434d36F32AbeD3F7937fE0be88dc1B0eB9381244);
+        require(msg.sender == createAccount);
+        StorageLib._adminMaxHealth(_playerId, _newHealth);
     }
 
     //function supportsInterface(bytes4 _interfaceID) external view returns (bool) {}
