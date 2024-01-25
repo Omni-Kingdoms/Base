@@ -157,19 +157,19 @@ library ExchangeStorageLib {
             uint256 tokensToUser = tokenAmount - tokenFee;
             tokenFacet.mint(_to, tokensToUser);
             tokenFacet.mint(feeRecipient, tokenFee); // 2% fee
-            c.goldBalance[_to] -= _amount;
+            c.goldBalance[msg.sender] -= _amount;
         }
     }
 
     function _claimGoldfromERC20(address _facetAddress, uint256 _amount, address payable _to) internal {
         CoinStorage storage c = diamondStorageCoin();
         ERC20Facet tokenFacet = ERC20Facet(_facetAddress); // Address of the diamond
-        uint256 tokenBalance = tokenFacet.balanceOf(_to);
+        uint256 tokenBalance = tokenFacet.balanceOf(msg.sender);
         require(tokenBalance / 1 ether >= _amount, "ExchangeFacet: You do not have enough tokens to claim");
         if (_amount > 0) {
             // Burn the tokens for the gold
             uint256 tokenAmount = _amount * 1 ether;
-            tokenFacet.burn(_to, tokenAmount);
+            tokenFacet.burn(msg.sender, tokenAmount);
             c.goldBalance[_to] += _amount;
         }
     }
