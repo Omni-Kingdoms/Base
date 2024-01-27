@@ -13,7 +13,7 @@ const upgradeExample = async () => {
         diamondAddress
     );
 
-const NewFacet = await ethers.getContractFactory("TrainFacet");
+const NewFacet = await ethers.getContractFactory("ExchangeFacet");
     const selectorsToAdd = getSelectors(NewFacet);
 
     const tx = await diamondCutFacet.diamondCut(

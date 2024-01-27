@@ -285,6 +285,13 @@ library ExchangeStorageLib {
         PlayerStorage storage s = diamondStoragePlayer();
         return s.owners[_playerId];
     }
+
+    function _getGoldBalance(address _address) internal view returns (uint256) {
+        CoinStorage storage c = diamondStorageCoin();
+        return c.goldBalance[_address];
+    }
+
+
 }
 
 contract ExchangeFacet is ERC721FacetInternal, ReentrancyGuard {
@@ -346,6 +353,10 @@ contract ExchangeFacet is ERC721FacetInternal, ReentrancyGuard {
 
     function owners(uint256 _playerId) public view returns (address) {
         return ExchangeStorageLib._owners(_playerId);
+    }
+
+    function getGoldBalance(address _address) public view returns (uint256) {
+        return ExchangeStorageLib._getGoldBalance(_address);
     }
 
     //function supportsInterface(bytes4 _interfaceID) external view returns (bool) {}
